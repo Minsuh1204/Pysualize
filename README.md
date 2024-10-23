@@ -9,6 +9,6 @@ Terminal-base music visualizer
 * After completing those goals, let's add some special features like changing text colors, making text appear/disappear effect, etc...
 
 ## External modules
-* [art](https://github.com/sepandhaghighi/art)
-* [colour](https://github.com/vaab/colour)
-* [Pylette](https://github.com/qTipTip/Pylette)
+* [sepandhaghighi/art](https://github.com/sepandhaghighi/art)
+* [vaab/colour](https://github.com/vaab/colour)
+* [qTipTip/Pylette](https://github.com/qTipTip/Pylette)
