@@ -1,6 +1,7 @@
 import argparse
 import os
 
+from art import text2art
 from colour import Color
 from Pylette import extract_colors
 
@@ -25,7 +26,9 @@ class Screen:
         return prefix
 
     def is_color_bright(self, rgb: tuple[float]):
-        perceived_brightness = 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]
+        perceived_brightness = (
+            0.2126 * rgb[0] * 256 + 0.7152 * rgb[1] * 256 + 0.0722 * rgb[2] * 256
+        )
         if perceived_brightness > 128:
             return True
         else:
@@ -39,35 +42,25 @@ class Screen:
                 line += f"{prefix} {self.RST}"
         return line * self.height
 
-    def get_gradient_background_with_text(self, gradient_colors: list[list[Color]], characters: list[dict]):
-        line=""
-        for i in range(4):
-            for j in range(len(gradient_colors[i])):
-                prefix = self.get_colored_background_prefix(gradient_colors[i][j].rgb)
-                c=characters[0]
-                if c["loc"]==
-
     def embed_character_in_background(
         self, characters: list[dict], gradient_background: str
     ):
         space_locations = []
         start_index = 0
         for i in range(self.width * self.height):
-            rst_loc = gradient_background.find(self.RST, start_index)
-            space_locations.append(rst_loc - 1)
-            start_index = rst_loc + 4
+            space_loc = gradient_background.find(" ", start_index)
+            space_locations.append(space_loc)
+            start_index = space_loc + 1
         for c in characters:
             x, y = c["x"], c["y"]
             char = c["char"]
             loc = y * self.width + x
             real_loc = space_locations[loc]
-            new_gradient_background = (
+            gradient_background = (
                 gradient_background[:real_loc]
                 + char
-                + gradient_background[real_loc + len(self.RST) :]
+                + gradient_background[real_loc + 1 :]
             )
-            print(new_gradient_background)
-            gradient_background = new_gradient_background
         return gradient_background
 
 
@@ -106,12 +99,7 @@ def get_ready(directory: str):
             gradient_colors.append(list(color_1.range_to(color_2, new[i])))
     screen = Screen(width, height)
     test = screen.get_gradient_background(gradient_colors)
-    chars = [
-        {"x": 1, "y": 0, "char": "D"},
-        {"x": 2, "y": 0, "char": "e"},
-        {"x": 3, "y": 0, "char": "v"},
-    ]
-    new = screen.embed_character_in_background(chars, test)
+    new = screen.embed_character_in_background([], test)
     print(new)
 
 
@@ -164,6 +152,8 @@ def main():
         # print("Translate")
         get_ready(args.directory)
         translate(args.directory)
+        test = text2art("Test 1234.\nI love Python.", "colossal")
+        print(test.split("\n"))
 
 
 if __name__ == "__main__":
